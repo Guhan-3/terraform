@@ -25,7 +25,7 @@ resource "aws_elastic_beanstalk_application" "github_app" {
 resource "aws_elastic_beanstalk_environment" "github_env" {
   name                = "github-beanstalk-env"
   application         = aws_elastic_beanstalk_application.github_app.name
-  solution_stack_name = "64bit Amazon Linux 2 v5.4.4 running Python 3.8"
+  solution_stack_name = "64bit Amazon Linux 2023 v4.7.1 running Corretto 21"
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
