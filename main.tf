@@ -35,7 +35,7 @@ resource "aws_elastic_beanstalk_environment" "github_env" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "EnvironmentType"
-    value     = "SingleInstance"
+    value     = "LoadBalanced"
   }
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
