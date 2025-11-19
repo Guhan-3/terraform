@@ -13,3 +13,28 @@ variable "key_name" {
   type        = string
   default     = "github" # Replace with your actual key pair name
 }
+variable "db_name" {
+  description = "The name of the database"
+  type        = string
+  default     = "github_runner_db"
+}
+variable "db_user" {
+  description = "The database username"
+  type        = string
+  default     = "admin"
+}
+variable "db_password" {
+  description = "The database password"
+  type        = string
+  default     = "Admin@1234"
+}
+variable "db_host" {
+  description = "The database host"
+  type        = string
+  default     = "github-runner-db.cleardb.net"  
+}
+variable "db_port" {
+  description = "The database port"
+  type        = number
+  default     = 3306
+}
