@@ -29,7 +29,7 @@ jobs:
         with:  
           terraform_version: 1.5.7 # Specify your Terraform version  
   
-      # Step 3: Configure AWS credentials (if using AWS)  
+      # Step 3: Configure AWS credentials  
       - name: Configure AWS Credentials  
         uses: aws-actions/configure-aws-credentials@v2  
         with:  
@@ -47,9 +47,12 @@ jobs:
   
       # Step 6: Apply or Destroy  
       - name: Terraform Apply/Destroy  
-        run: |   
-          terraform apply -auto-approve plan.tfplan  
-          if [ "${{ github.event.inputs.terraform_action }}" == "destroy" ]; then  
+        run: |  
+          if [ "${{ github.event.inputs.terraform_action }}" == "apply" ]; then  
+            echo "Running terraform apply..."  
+            terraform apply -auto-approve plan.tfplan  
+          elif [ "${{ github.event.inputs.terraform_action }}" == "destroy" ]; then  
+            echo "Running terraform destroy..."  
             terraform destroy -auto-approve  
           else  
             echo "Invalid action. Please specify 'apply' or 'destroy'."  
