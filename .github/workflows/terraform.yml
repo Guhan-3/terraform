@@ -47,10 +47,9 @@ jobs:
   
       # Step 6: Apply or Destroy  
       - name: Terraform Apply/Destroy  
-        run: |  
-          if [ "${{ github.event.inputs.terraform_action }}" == "apply" ]; then  
-            terraform apply -auto-approve plan.tfplan  
-          elif [ "${{ github.event.inputs.terraform_action }}" == "destroy" ]; then  
+        run: |   
+          terraform apply -auto-approve plan.tfplan  
+          if [ "${{ github.event.inputs.terraform_action }}" == "destroy" ]; then  
             terraform destroy -auto-approve  
           else  
             echo "Invalid action. Please specify 'apply' or 'destroy'."  
