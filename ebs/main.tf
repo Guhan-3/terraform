@@ -4,19 +4,6 @@ provider "aws" {
 
 
 
-
-resource "aws_instance" "github" {
-    ami = var.ami_id
-    instance_type = var.instance_type
-    key_name = var.key_name
-
-    tags = {
-        Name = "github-runner"
-    }
-
-}
-
-
 resource "aws_elastic_beanstalk_application" "github_app" {
   name        = "github-beanstalk-app"
   description = "Elastic Beanstalk Application for GitHub Runner"
