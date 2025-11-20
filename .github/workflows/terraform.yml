@@ -1,22 +1,22 @@
 name: Terraform Automation  
   
 on:  
-  push:  
-    branches:  
-      - main  
-  pull_request:  
-    branches:  
-      - main  
   workflow_dispatch:  
     inputs:  
       terraform_action:  
         description: 'Terraform action to execute (apply/destroy)'  
         required: true  
         default: 'apply'  
+      environment:  
+        description: 'Terraform environment to execute (ec2/ebs)'  
+        required: true  
+        default: 'ec2'  
   
 jobs:  
   terraform:  
     runs-on: ubuntu-latest  
+    environment: ${{ github.event.inputs.environment }} # Dynamically use the environment input  
+  
     steps:  
       # Step 1: Checkout the repository code  
       - name: Checkout code  
@@ -26,7 +26,7 @@ jobs:
       - name: Set up Terraform  
         uses: hashicorp/setup-terraform@v2  
         with:  
-          terraform_version: 1.5.7 # Specify your Terraform version  
+          terraform_version: 1.5.7  
   
       # Step 3: Configure AWS credentials  
       - name: Configure AWS Credentials  
@@ -36,9 +36,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  
           aws-region: ${{ secrets.AWS_REGION }}  
   
-      # Step 4: Initialize Terraform  
+      # Step 4: Initialize Terraform for the selected environment  
       - name: Terraform Init  
-        run: terraform init  
+        run: terraform -chdir=${{ github.event.inputs.environment }} init  
   
       # Step 5: Terraform Plan  
       - name: Terraform Plan  
@@ -51,7 +51,7 @@ jobs:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}  
           TF_VAR_db_host: ${{ secrets.DB_HOST }}  
           TF_VAR_db_port: ${{ secrets.DB_PORT }}  
-        run: terraform plan -out=plan.tfplan  
+        run: terraform -chdir=${{ github.event.inputs.environment }} plan -out=plan.tfplan  
   
       # Step 6: Apply or Destroy Terraform  
       - name: Terraform Apply/Destroy  
@@ -66,11 +66,11 @@ jobs:
           TF_VAR_db_port: ${{ secrets.DB_PORT }}  
         run: |  
           if [ "${{ github.event.inputs.terraform_action }}" == "apply" ]; then  
-            echo "Running terraform apply..."  
-            terraform apply -auto-approve plan.tfplan  
+            echo "Running terraform apply for ${{ github.event.inputs.environment }}..."  
+            terraform -chdir=${{ github.event.inputs.environment }} apply -auto-approve plan.tfplan  
           elif [ "${{ github.event.inputs.terraform_action }}" == "destroy" ]; then  
-            echo "Running terraform destroy..."  
-            terraform destroy -auto-approve  
+            echo "Running terraform destroy for ${{ github.event.inputs.environment }}..."  
+            terraform -chdir=${{ github.event.inputs.environment }} destroy -auto-approve  
           else  
             echo "Invalid action. Please specify 'apply' or 'destroy'."  
             exit 1  
